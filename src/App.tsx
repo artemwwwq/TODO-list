@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from 'uuid';
-import {SuperInput} from "./componets/SuperInput";
+import {AddItemForm} from "./AddItemForm";
 
 export type FilterValuesType = "all" | "active" | "completed";
 type TodolistType = {
@@ -35,15 +35,6 @@ function App() {
             {id: v1(), title: "React Book", isDone: true}
         ]
     });
-
-    const editTask = (todolistId: string , taskId: string,newTitle: string) => {
-        const editValue = {...tasks, [todolistId]:tasks[todolistId].map(el=> el.id === taskId ? {...el,title: newTitle } : el)}
-        setTasks(editValue)
-    }
-
-    const editTodo = (todolistId: string,newTitle: string) => {
-        setTodolists(todolists.map(el=> el.id === todolistId ? {...el, title: newTitle } : el))
-    }
 
 
     function removeTask(id: string, todolistId: string) {
@@ -95,16 +86,41 @@ function App() {
         setTasks({...tasks});
     }
 
-    const addTodoList=(newTitle: string)=> {
-      const newTodoId = v1()
-       const newTodoList: TodolistType  = {id: newTodoId, title: newTitle, filter: "all"}
-        setTodolists([...todolists, newTodoList])
-        setTasks({[newTodoId]: [] ,...tasks })
+     const addTodoList = (title: string) => {
+        let todolist: TodolistType = {
+            id: v1(),
+            filter: 'all',
+            title: title
+        }
+        setTodolists([todolist, ...todolists])
+         setTasks({...tasks, [todolist.id]: []})
     }
+
+    const changeTaskTitle = (id: string, newValue: string, todolistId: string) => {
+//достанем нужный массив по todolistId:
+        let todolistTasks = tasks[todolistId];
+        // найдём нужную таску:
+        let task = todolistTasks.find(t => t.id === id);
+        //изменим таску, если она нашлась
+        if (task) {
+            task.title = newValue;
+            // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
+            setTasks({...tasks});
+        }
+    }
+
+    const changeTodolistTitle = (id: string, newTitle: string) => {
+        const todoList = todolists.find(el=> el.id === id)
+        if (todoList) {
+            todoList.title = newTitle
+            setTodolists([...todolists])
+        }
+    }
+
 
     return (
         <div className="App">
-            <SuperInput callBack={addTodoList}/>
+            <AddItemForm addItem={addTodoList} />
             {
                 todolists.map(tl => {
                     let allTodolistTasks = tasks[tl.id];
@@ -126,10 +142,11 @@ function App() {
                         changeFilter={changeFilter}
                         addTask={addTask}
                         changeTaskStatus={changeStatus}
+                        changeTaskTitle={changeTaskTitle}
                         filter={tl.filter}
                         removeTodolist={removeTodolist}
-                        editTask={editTask}
-                        editTodo={editTodo}
+                        changeTodolistTitle={changeTodolistTitle}
+
                     />
                 })
             }
