@@ -1,18 +1,19 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
-type addItemFormPropsType = {
-    addItem: (title: string)=> void
-
+type AddItemFormPropsType = {
+    addItem: (title: string) => void
 }
 
-export function AddItemForm(props: addItemFormPropsType) {
+export function AddItemForm(props: AddItemFormPropsType) {
+
     let [title, setTitle] = useState("")
     let [error, setError] = useState<string | null>(null)
 
-    const addTask = () => {
-        let newTitle = title.trim();
-        if (newTitle !== "") {
-            props.addItem(newTitle);
+    const addItem = () => {
+        if (title.trim() !== "") {
+            props.addItem(title);
             setTitle("");
         } else {
             setError("Title is required");
@@ -26,19 +27,38 @@ export function AddItemForm(props: addItemFormPropsType) {
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         setError(null);
         if (e.charCode === 13) {
-            addTask();
+            addItem();
         }
     }
 
-    return (
-        <div>
-            <input value={title}
-                   onChange={onChangeHandler}
-                   onKeyPress={onKeyPressHandler}
-                   className={error ? "error" : ""}
-            />
-            <button onClick={addTask}>+</button>
-            {error && <div className="error-message">{error}</div>}
-        </div>
-    )
+   const ButtonSetting = {
+        maxWidth: '38px',
+        maxHeight: '38px',
+        minWidth: '38px',
+        minHeight: '38px',
+    }
+
+    return <div>
+
+        {/*<input value={title}
+               onChange={onChangeHandler}
+               onKeyPress={onKeyPressHandler}
+               className={error ? "error" : ""}
+        />*/}
+
+        <TextField
+            value={title}
+            onChange={onChangeHandler}
+            onKeyPress={onKeyPressHandler}
+            size='small'
+            id="outlined-basic"
+            label={error ? "Title is required" : 'Welcome'}
+            variant="outlined"
+            error={!!error}
+        />
+
+        <Button size='small' variant='contained' style={ButtonSetting} onClick={addItem}>+</Button>
+
+       {/* {error && <div className="error-message">{error}</div>}*/}
+    </div>
 }
