@@ -2,10 +2,9 @@ import React, {ChangeEvent} from 'react';
 import {FilterValuesType} from './App';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
-import IconButton from '@mui/material/IconButton/IconButton';
+import IconButton from "@mui/material/IconButton/IconButton";
 import {Delete} from "@mui/icons-material";
 import {Button, Checkbox} from "@mui/material";
-import {SuperCheckbox} from "./components/SuperCheckbox";
 
 
 export type TaskType = {
@@ -28,9 +27,6 @@ type PropsType = {
     changeTaskTitle: (taskId: string, newTitle: string, todolistId: string) => void
 }
 
-
-
-
 export function Todolist(props: PropsType) {
     const addTask = (title: string) => {
         props.addTask(title, props.id);
@@ -46,11 +42,6 @@ export function Todolist(props: PropsType) {
     const onAllClickHandler = () => props.changeFilter("all", props.id);
     const onActiveClickHandler = () => props.changeFilter("active", props.id);
     const onCompletedClickHandler = () => props.changeFilter("completed", props.id);
-
-    const changeStatusHandler = (tID: string, checkedValue: boolean) => {
-        props.changeTaskStatus(tID, checkedValue, props.id )
-    }
-
 
     return <div>
         <h3> <EditableSpan value={props.title} onChange={changeTodolistTitle} />
@@ -73,13 +64,11 @@ export function Todolist(props: PropsType) {
 
 
                     return <div key={t.id} className={t.isDone ? "is-done" : ""}>
-
-                        <SuperCheckbox callBack={(checkedValue)=>changeStatusHandler(t.id, checkedValue)} isDone={t.isDone}/>
-                        {/*<Checkbox
+                        <Checkbox
                             checked={t.isDone}
                             color="primary"
                             onChange={onChangeHandler}
-                        />*/}
+                        />
 
                         <EditableSpan value={t.title} onChange={onTitleChangeHandler} />
                         <IconButton onClick={onClickHandler}>
